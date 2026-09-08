@@ -82,7 +82,7 @@ function createOrder(customerId, items, onOrderCreated) {
           return;
         }
 
-        const totals = calculateTotal({ items: items }, foundProducts);
+        const totals = calculateTotal({ items }, foundProducts);
 
         processPayment(totals.total, function onPaymentProcessed(err, payment) {
           if (err) {
