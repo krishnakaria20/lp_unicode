@@ -105,10 +105,4 @@ function createOrder(customerId, items, onOrderCreated) {
   });
 }
 
-module.exports = {
-  getCustomer,
-  getProducts,
-  checkStock,
-  processPayment,
-  createOrder
-};
+module.exports = {getCustomer,getProducts,checkStock,processPayment,createOrder};

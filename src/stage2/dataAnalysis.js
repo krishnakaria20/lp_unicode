@@ -57,11 +57,4 @@ function areAllOrdersValid(orderList, customerList, productList) {
   return orderList.every(order => isOrderValid(order, customerList, productList));
 }
 
-module.exports = {
-  getAllOrderTotals,
-  calculateTotalRevenue,
-  calculateAverageOrderValue,
-  getHighestValueOrder,
-  hasHighValueOrder,
-  areAllOrdersValid
-};
+module.exports = {getAllOrderTotals,calculateTotalRevenue,calculateAverageOrderValue,getHighestValueOrder,hasHighValueOrder,areAllOrdersValid};

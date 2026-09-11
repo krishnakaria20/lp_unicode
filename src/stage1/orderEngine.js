@@ -69,12 +69,4 @@ function getOrdersByCustomer(customerId, orderList) {
   return orderList.filter(o => o.customerId === customerId);
 }
 
-module.exports = {
-  calculateSubtotal,
-  calculateDiscount,
-  calculateTax,
-  calculateTotal,
-  generateOrderSummary,
-  getOrderById,
-  getOrdersByCustomer
-};
+module.exports = {calculateSubtotal,calculateDiscount,calculateTax,calculateTotal,generateOrderSummary,getOrderById,getOrdersByCustomer};

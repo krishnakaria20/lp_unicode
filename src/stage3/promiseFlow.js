@@ -87,10 +87,4 @@ function createOrder(customerId, items) {
     });
 }
 
-module.exports = {
-  getCustomer,
-  getProducts,
-  checkStock,
-  processPayment,
-  createOrder
-};
+module.exports = {getCustomer,getProducts,checkStock,processPayment,createOrder};
