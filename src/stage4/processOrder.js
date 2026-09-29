@@ -92,10 +92,4 @@ async function processOrder(orderId){
     }
 }
 
-module.exports = {
-    processOrder,
-    CustomerNotFoundError,
-    ProductNotFoundError,
-    InsufficientStockError,
-    InvalidOrderError
-};
+module.exports = {processOrder,CustomerNotFoundError,ProductNotFoundError,InsufficientStockError,InvalidOrderError};
