@@ -61,11 +61,13 @@ const loginUser = async(req , res) => {
         });
     }
 
-    const accessToken = jwt.sign({userId : user._id} , process.env.JWT_SECRET);
+    const accessToken = jwt.sign({userId : user._id} , process.env.JWT_SECRET , {expiresIn : "15m"});
+    const refreshToken = jwt.sign({userId : user._id} , process.env.JWT_REFRESH_SECRET , {expiresIn : "7d"});
 
     res.status(200).json({
         message : "Login successfull" ,
-        accessToken , 
+        accessToken ,
+        refreshToken ,
         user : {
             id : user._id ,
             name : user.name ,
@@ -89,4 +91,29 @@ const isProtected = (req , res) => {
     });
 }
 
-module.exports = {registerUser , loginUser , isProtected};
+const refreshAccessToken = (req , res) => {
+    try{
+        const {refreshToken} = req.body;
+
+        if(!refreshToken){
+            res.status(401).json({
+                message : "Refresh token required"
+            });
+        }
+
+        const decodedPayload = jwt.verify(refreshToken , process.env.JWT_REFRESH_SECRET);
+
+        const accessToken = jwt.sign({userId : decodedPayload.userId} , process.env.JWT_SECRET , {expiresIn : "15m"});
+
+        res.status(200).json({accessToken});
+    }
+
+    catch(error){
+        res.status(400).json({
+            message : "Invalide or expired access token" , 
+            error : error.message
+        });
+    }
+}
+
+module.exports = {registerUser , loginUser , isProtected , refreshAccessToken};
