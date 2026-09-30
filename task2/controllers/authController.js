@@ -116,4 +116,31 @@ const refreshAccessToken = (req , res) => {
     }
 }
 
-module.exports = {registerUser , loginUser , isProtected , refreshAccessToken};
+const getProfile = async(req , res) => {
+    try{
+        const user = await User.findById(req.userId);
+
+        if(!user){
+            return res.status(404).json({
+                message : "User not found"
+            });
+        }
+
+        res.status(200).json({
+            user : {
+                userId : user._id ,
+                name : user.name ,
+                email : user.email
+            }
+        });
+    }
+
+    catch(error){
+        res.status(500).json({
+            message : "Server error" , 
+            error : error.message
+        });
+    }
+}
+
+module.exports = {registerUser , loginUser , isProtected , refreshAccessToken , getProfile};

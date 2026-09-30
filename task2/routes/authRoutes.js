@@ -1,5 +1,5 @@
 const express = require("express");
-const {registerUser , loginUser ,isProtected , refreshAccessToken} = require("../controllers/authController.js");
+const {registerUser , loginUser ,isProtected , refreshAccessToken , getProfile} = require("../controllers/authController.js");
 const authMiddleware = require("../middleware/authMiddleware.js");
 
 const router = express.Router();
@@ -10,5 +10,8 @@ router.post("/login" , loginUser);
 router.get("/protected" , authMiddleware , isProtected);
 
 router.post("/refresh-token" , refreshAccessToken);
+
+router.get("/profile" , authMiddleware , getProfile);
+
 
 module.exports = router;
