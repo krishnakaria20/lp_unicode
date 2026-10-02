@@ -1,6 +1,7 @@
 const User = require("../models/User.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/mailer.js");
 
 const registerUser = async(req , res) => {
     
@@ -22,6 +23,8 @@ const registerUser = async(req , res) => {
         email ,
         password : hashedPassword
     });
+
+    sendEmail(user.email , "Registeration message" , `Hi ${user.name} . Your account has been created successfully`);
 
     res.status(201).json({
         message : "User created successfully" , 
@@ -61,6 +64,8 @@ const loginUser = async(req , res) => {
         });
     }
 
+    sendEmail(user.email , "Login detected" , `Hello ${user.name} , your login was successful`);
+
     const accessToken = jwt.sign({userId : user._id} , process.env.JWT_SECRET , {expiresIn : "15m"});
     const refreshToken = jwt.sign({userId : user._id} , process.env.JWT_REFRESH_SECRET , {expiresIn : "7d"});
 
@@ -82,13 +87,6 @@ const loginUser = async(req , res) => {
             error : error.message
         });
     }
-}
-
-const isProtected = (req , res) => {
-    res.status(200).json({
-        message : "You are authenticated" ,
-        userId : req.userId
-    });
 }
 
 const refreshAccessToken = (req , res) => {
@@ -143,4 +141,4 @@ const getProfile = async(req , res) => {
     }
 }
 
-module.exports = {registerUser , loginUser , isProtected , refreshAccessToken , getProfile};
+module.exports = {registerUser , loginUser , refreshAccessToken , getProfile};
