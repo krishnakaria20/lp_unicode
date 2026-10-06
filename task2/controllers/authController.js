@@ -1,7 +1,7 @@
-const User = require("../models/User.js");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const sendEmail = require("../utils/mailer.js");
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import sendEmail from "../utils/mailer.js";
 
 const registerUser = async(req , res) => {
     
@@ -66,8 +66,8 @@ const loginUser = async(req , res) => {
 
     sendEmail(user.email , "Login detected" , `Hello ${user.name} , your login was successful`);
 
-    const accessToken = jwt.sign({userId : user._id} , process.env.JWT_SECRET , {expiresIn : "15m"});
-    const refreshToken = jwt.sign({userId : user._id} , process.env.JWT_REFRESH_SECRET , {expiresIn : "7d"});
+    const accessToken = jwt.sign({userId : user._id} , process.env.JWT_SECRET , AccessTokenExpiresIn);
+    const refreshToken = jwt.sign({userId : user._id} , process.env.JWT_REFRESH_SECRET , RefreshTokenExpiresIn);
 
     res.status(200).json({
         message : "Login successfull" ,
@@ -101,14 +101,14 @@ const refreshAccessToken = (req , res) => {
 
         const decodedPayload = jwt.verify(refreshToken , process.env.JWT_REFRESH_SECRET);
 
-        const accessToken = jwt.sign({userId : decodedPayload.userId} , process.env.JWT_SECRET , {expiresIn : "15m"});
+        const accessToken = jwt.sign({userId : decodedPayload.userId} , process.env.JWT_SECRET , process.env.AccessTokenExpiresIn);
 
         res.status(200).json({accessToken});
     }
 
     catch(error){
         res.status(400).json({
-            message : "Invalide or expired access token" , 
+            message : "Invalid or expired access token" , 
             error : error.message
         });
     }
@@ -141,4 +141,4 @@ const getProfile = async(req , res) => {
     }
 }
 
-module.exports = {registerUser , loginUser , refreshAccessToken , getProfile};
+export {registerUser , loginUser , refreshAccessToken , getProfile};
