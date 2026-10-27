@@ -81,11 +81,13 @@ export const login = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        userId: user._id.toString(),
+        userId: user._id,
         role: user.role
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN
+      }
     );
 
     res.status(200).json({

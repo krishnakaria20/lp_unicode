@@ -1,6 +1,5 @@
 import Auction from "../models/Auction.js";
 import cloudinary from "../config/cloudinary.js";
-import { Readable } from "stream";
 
 // Create an auction
 export const createAuction = async (req, res) => {
@@ -14,19 +13,15 @@ export const createAuction = async (req, res) => {
       endTime
     } = req.body;
 
-    if (
-      !title || !description || !category ||
-      startingPrice == null || !startTime || !endTime
-    ) {
+    if (!title || !description || !category ||
+        startingPrice == null || !startTime || !endTime) {
       return res.status(400).json({
         message: "All fields are required"
       });
     }
 
-    if (
-      Number(startingPrice) < 0 ||
-      !Number.isFinite(Number(startingPrice))
-    ) {
+    if (Number(startingPrice) < 0 ||
+        !Number.isFinite(Number(startingPrice))) {
       return res.status(400).json({
         message: "Invalid starting price"
       });
@@ -43,22 +38,16 @@ export const createAuction = async (req, res) => {
     }
 
     // Upload images to Cloudinary
-    const images = await Promise.all(
-      (req.files || []).map((file) => {
-        return new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result.secure_url);
-            }
-          );
+    const images = [];
 
-          Readable.from(file.buffer).pipe(stream);
-        });
-      })
-    );
+    for (const file of req.files || []) {
+      const image = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
 
-    // Set status based on the auction time
+      const result = await cloudinary.uploader.upload(image);
+      images.push(result.secure_url);
+    }
+
+    // Set auction status
     const now = new Date();
     let status = "ACTIVE";
 
@@ -108,7 +97,9 @@ export const getAuctionById = async (req, res) => {
     const auction = await Auction.findById(req.params.id);
 
     if (!auction) {
-      return res.status(404).json({ message: "Auction not found" });
+      return res.status(404).json({
+        message: "Auction not found"
+      });
     }
 
     const now = new Date();
@@ -119,7 +110,9 @@ export const getAuctionById = async (req, res) => {
 
     res.status(200).json(auction);
   } catch (error) {
-    res.status(400).json({ message: "Invalid auction ID" });
+    res.status(400).json({
+      message: "Invalid auction ID"
+    });
   }
 };
 
@@ -129,7 +122,9 @@ export const updateAuction = async (req, res) => {
     const auction = await Auction.findById(req.params.id);
 
     if (!auction) {
-      return res.status(404).json({ message: "Auction not found" });
+      return res.status(404).json({
+        message: "Auction not found"
+      });
     }
 
     if (
@@ -172,7 +167,9 @@ export const deleteAuction = async (req, res) => {
     const auction = await Auction.findById(req.params.id);
 
     if (!auction) {
-      return res.status(404).json({ message: "Auction not found" });
+      return res.status(404).json({
+        message: "Auction not found"
+      });
     }
 
     if (
